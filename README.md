@@ -1,0 +1,89 @@
+# MTGA Fullscreen Helper
+
+A Windows tray application that automatically keeps Magic: The Gathering Arena in fullscreen mode by detecting when the game window becomes windowed and sending ALT+ENTER to restore fullscreen.
+
+## Features
+
+- **System Tray Application**: Runs in background with no visible window
+- **Automatic Detection**: Monitors MTGA window state every second (configurable)
+- **Automatic Restoration**: Sends ALT+ENTER when windowed mode is detected
+- **Configurable Settings**: Customize via `config.json`
+- **Simple Controls**: Right-click tray icon to toggle active/inactive or quit
+
+## Requirements
+
+- Windows 10/11
+- .NET 6.0 Runtime or later
+- Magic: The Gathering Arena
+
+## Installation
+
+### Option 1: Download Release
+1. Download the latest release from the [Releases page](../../releases)
+2. Extract to a folder of your choice
+3. Run `MTGAFullscreenHelper.exe` (right-click → "Run as administrator" recommended)
+
+### Option 2: Build from Source
+1. Install [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
+2. Clone or download this repository
+3. Open terminal in the project folder
+4. Run:
+   ```bash
+   dotnet build --configuration Release
+   ```
+5. Find the built executable in `bin\Release\net6.0-windows\`
+
+## Usage
+
+1. **Start the application**: Double-click `MTGAFullscreenHelper.exe` or run from command line
+2. **Tray icon appears**: Look for the application icon in your system tray (notification area)
+3. **Automatic monitoring**: The app will check MTGA's window state every second
+4. **Right-click menu**: 
+   - **Toggle Active**: Pause/resume monitoring
+   - **Quit**: Exit the application
+
+## Configuration
+
+Edit `config.json` to customize settings:
+
+```json
+{
+  "WindowTitle": "Magic The Gatherin",
+  "Executable": "mtga.exe", 
+  "CheckIntervalMs": 1000
+}
+```
+
+- **WindowTitle**: The exact window title to look for (MTGA's default)
+- **Executable**: Process name (not currently used, reserved for future features)
+- **CheckIntervalMs**: How often to check window state in milliseconds
+
+## Troubleshooting
+
+### App doesn't detect MTGA
+- Make sure MTGA is running and the window title matches the config
+- Try running as administrator for better process access
+
+### Alt+Enter doesn't work
+- Ensure the app has permission to send keystrokes to other applications
+- Run as administrator
+- Check that MTGA accepts Alt+Enter for fullscreen toggle
+
+### Tray icon missing
+- Check the system tray overflow area (click the up arrow in tray)
+- Restart the application
+
+## Technical Details
+
+- Built with .NET 6 Windows Forms
+- Uses Win32 APIs for window detection
+- Timer-based monitoring with configurable intervals
+- Cross-process keystroke simulation via SendKeys
+
+## License
+
+This project is open source. Feel free to modify and distribute.
+
+## Contributing
+
+Issues and pull requests are welcome!
