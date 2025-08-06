@@ -1,5 +1,5 @@
 {
   "WindowTitle": "MTGA",
   "Executable": "MTGA.exe",
-  "CheckIntervalMs": 1000
+  "CheckIntervalMs": 100
 }
