@@ -22,12 +22,18 @@ A Windows tray application that automatically keeps Magic: The Gathering Arena i
 
 ## Installation
 
-### Option 1: Download Release
+### Option 1: Windows Installer
+1. Download the latest installer (`MTGAFullscreenHelper-Setup.exe`) from the [Releases page](../../releases)
+2. Run the installer and follow the setup wizard
+3. (Optional) Choose to create a desktop shortcut or enable auto-start
+4. Launch MTGA Fullscreen Helper from the Start Menu or desktop icon
+
+### Option 2: Download Release
 1. Download the latest release from the [Releases page](../../releases)
 2. Extract to a folder of your choice
 3. Run `MTGAFullscreenHelper.exe` (right-click → "Run as administrator" recommended)
 
-### Option 2: Build from Source
+### Option 3: Build from Source
 1. Install [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
 2. Clone or download this repository
 3. Open terminal in the project folder
