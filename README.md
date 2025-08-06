@@ -1,6 +1,10 @@
 # MTGA Fullscreen Helper
 
-A Windows tray application that automatically keeps Magic: The Gathering Arena in fullscreen mode by detecting when the game window becomes windowed and sending ALT+ENTER to restore fullscreen.
+A Windows tray application that automatically keeps Magic: The Gathering Arena in fullscreen mode by detecting when the game window becomes windowed and sending <kbd>ALT</kbd> + <kbd>ENTER</kbd> to restore fullscreen.
+
+<div align="center">
+  <img src="screenshot.png" width="50%">
+</div>
 
 ## Features
 
