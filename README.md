@@ -50,6 +50,7 @@ A Windows tray application that automatically keeps Magic: The Gathering Arena i
 3. **Automatic monitoring**: The app will check MTGA's window state every second
 4. **Right-click menu**: 
    - **Toggle Active**: Pause/resume monitoring
+   - **Reset Counter**: Reset the fullscreen restoration count to zero
    - **Quit**: Exit the application
 
 ## Configuration
@@ -82,6 +83,11 @@ Edit `config.json` to customize settings:
 ### Tray icon missing
 - Check the system tray overflow area (click the up arrow in tray)
 - Restart the application
+
+### Counter shows high numbers
+- The counter may increment rapidly if the window title doesn't match exactly
+- Use "Reset Counter" from the right-click menu to start fresh
+- Try pausing the app, starting MTGA, waiting for it to go fullscreen, then reactivating
 
 ## Technical Details
 

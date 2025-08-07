@@ -11,8 +11,9 @@ namespace MTGAFullscreenHelper
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            var config = Config.Load("config.json");
-            Application.Run(new TrayApp(config));
+            string configPath = "config.json";
+            var config = Config.Load(configPath);
+            Application.Run(new TrayApp(config, configPath));
         }
     }
 }

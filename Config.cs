@@ -9,6 +9,7 @@ namespace MTGAFullscreenHelper
         public string WindowTitle { get; set; } = "Magic The Gatherin";
         public string Executable { get; set; } = "mtga.exe";
         public int CheckIntervalMs { get; set; } = 1000;
+        public int RestoreCount { get; set; } = 0;
 
         public static Config Load(string path)
         {
