@@ -1,10 +1,15 @@
 # MTGA Fullscreen Helper
 
-A Windows tray application that automatically keeps Magic: The Gathering Arena in fullscreen mode by detecting when the game window becomes windowed and sending <kbd>ALT</kbd> + <kbd>ENTER</kbd> to restore fullscreen.
+<img align="right" width="25%" src="screenshot.png">
 
-<div align="center">
-  <img src="screenshot.png" width="50%">
-</div>
+Tired of casting the <kbd>ALT</kbd> + <kbd>ENTER</kbd> fullscreen spell at every scene change in MTG Arena on your ultrawide display? This tray script finally breaks the [years-long ultrawide ~~bug~~ curse Wizards forgot to unsummon](https://feedback.wizards.com/forums/918667-mtg-arena-bugs-product-suggestions/suggestions/47712281-can-t-use-ultrawide-fullscreen).
+
+This was crafted for GitHub’s [For the Love of Code hackathon](https://gh.io/ftloc) using [GitHub Copilot](https://github.com/features/copilot), [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet), and a `+1`/`+1` token of stubbornness. 
+
+I usually conjure spells on macOS and Linux, but this Windows build is my first summoning in that domain. If you see bugs, send word to the council ([open an issue](https://github.com/leereilly/MTGAFullscreenHelper/issues/new)).
+
+**Quick install:** Navigate to [Releases](https://github.com/leereilly/MTGAFullscreenHelper/releases/) and download the latest `MTGAFullscreenHelper-Setup.exe`. Double-click. Install. Magic.
+<br clear="all" />
 
 ## Features
 
