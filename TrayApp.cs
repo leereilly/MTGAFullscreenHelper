@@ -40,10 +40,14 @@ namespace MTGAFullscreenHelper
             
             var toggleItem = new ToolStripMenuItem("Toggle Active", null, ToggleActive);
             var resetCounterItem = new ToolStripMenuItem("Reset Counter", null, ResetCounter);
+            var aboutItem = new ToolStripMenuItem("About", null, ShowAbout);
             var quitItem = new ToolStripMenuItem("Quit", null, Quit);
             
             contextMenu.Items.Add(toggleItem);
             contextMenu.Items.Add(resetCounterItem);
+            contextMenu.Items.Add("-"); // Separator
+            contextMenu.Items.Add(aboutItem);
+            contextMenu.Items.Add("-"); // Separator
             contextMenu.Items.Add(quitItem);
             
             return contextMenu;
@@ -135,6 +139,12 @@ namespace MTGAFullscreenHelper
             hasBeenFullscreenOnce = false;
             config.Save(configPath);
             UpdateTrayText();
+        }
+
+        private void ShowAbout(object? sender, EventArgs e)
+        {
+            var aboutForm = new AboutForm(config.RestoreCount);
+            aboutForm.ShowDialog();
         }
 
         private void Quit(object? sender, EventArgs e)
