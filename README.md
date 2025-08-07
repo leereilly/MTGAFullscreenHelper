@@ -64,8 +64,8 @@ Edit `config.json` to customize settings:
 
 ```json
 {
-  "WindowTitle": "Magic The Gatherin",
-  "Executable": "mtga.exe", 
+  "WindowTitle": "Magic The Gathering",
+  "Executable": "MTGA.exe", 
   "CheckIntervalMs": 1000
 }
 ```
