@@ -1,4 +1,4 @@
-# MTGA Fullscreen Helper
+# <img src="MTGAFullscreenHelper.png" height="28"> MTGA Fullscreen Helper
 
 <img align="right" width="25%" src="screenshot.png">
 

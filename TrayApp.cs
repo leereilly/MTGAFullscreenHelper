@@ -2,6 +2,8 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using System.IO; // added
+using System.Drawing; // added for Icon
 
 namespace MTGAFullscreenHelper
 {
@@ -27,11 +29,25 @@ namespace MTGAFullscreenHelper
         {
             trayIcon = new NotifyIcon()
             {
-                Icon = System.Drawing.SystemIcons.Application,
+                Icon = GetAppIcon(),
                 ContextMenuStrip = CreateContextMenu(),
                 Visible = true,
                 Text = GetTrayText()
             };
+        }
+
+        private System.Drawing.Icon GetAppIcon()
+        {
+            try
+            {
+                var icoPath = Path.Combine(AppContext.BaseDirectory, "MTGAFullScreenHelper.ico");
+                if (File.Exists(icoPath))
+                {
+                    return new System.Drawing.Icon(icoPath);
+                }
+            }
+            catch { }
+            return System.Drawing.SystemIcons.Application;
         }
 
         private ContextMenuStrip CreateContextMenu()

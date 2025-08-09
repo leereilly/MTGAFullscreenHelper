@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Drawing.Drawing2D; // added for gradient
 
 namespace MTGAFullscreenHelper
 {
@@ -17,212 +18,283 @@ namespace MTGAFullscreenHelper
 
         private void InitializeComponent()
         {
-            this.Text = "About MTGA Fullscreen Helper";
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.ShowInTaskbar = false;
-            this.AutoSize = true;
-            this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            // Basic form settings
+            Text = "About MTGA Fullscreen Helper";
+            StartPosition = FormStartPosition.CenterParent;
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
+            MinimizeBox = false;
+            ShowInTaskbar = false;
+            AutoSize = true;
+            AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            BackColor = Color.FromArgb(250, 251, 252);
 
-            // Main panel
-            var mainPanel = new TableLayoutPanel
+            var version = typeof(AboutForm).Assembly.GetName().Version?.ToString() ?? "(unknown)";
+            // Derived fun stats
+            var joulesSpent = 1.5 * restoreCount; // J
+            var secondsSaved = 0.42 * restoreCount; // s
+
+            // Header panel with gradient
+            var headerPanel = new Panel
             {
-                AutoSize = true,
-                AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                RowCount = 7,
-                ColumnCount = 1,
-                Padding = new Padding(30),
-                MinimumSize = new Size(350, 0)
+                Height = 110,
+                Dock = DockStyle.Top,
+                Padding = new Padding(15, 12, 15, 12)
+            };
+            headerPanel.Paint += (s, e) =>
+            {
+                using var brush = new LinearGradientBrush(headerPanel.ClientRectangle,
+                    Color.FromArgb(88, 48, 136), Color.FromArgb(30, 30, 48), LinearGradientMode.Horizontal);
+                e.Graphics.FillRectangle(brush, headerPanel.ClientRectangle);
             };
 
-            // App title
+            // App logo (PNG)
+            var logoPath = System.IO.Path.Combine(AppContext.BaseDirectory, "MTGAFullScreenHelper.png");
+            Image? logo = null;
+            if (System.IO.File.Exists(logoPath))
+            {
+                try { logo = Image.FromFile(logoPath); } catch { logo = null; }
+            }
+
+            var iconBox = new PictureBox
+            {
+                Image = logo ?? SystemIcons.Application.ToBitmap(),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Size = new Size(64, 64),
+                Location = new Point(10, 18),
+                BackColor = Color.Transparent
+            };
+
             var titleLabel = new Label
             {
                 Text = "MTGA Fullscreen Helper",
-                Font = new Font("Segoe UI", 16, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleCenter,
+                ForeColor = Color.White,
+                Font = new Font("Segoe UI", 18, FontStyle.Bold),
                 AutoSize = true,
-                Margin = new Padding(0, 10, 0, 10),
-                ForeColor = Color.FromArgb(0, 120, 215) // Windows blue
+                Location = new Point(90, 18),
+                BackColor = Color.Transparent
             };
 
-            // Version
-            var versionLabel = new Label
+            var subtitleLabel = new Label
             {
-                Text = "Version 0.0.2",
-                Font = new Font("Segoe UI", 10),
-                TextAlign = ContentAlignment.MiddleCenter,
+                Text = $"Version {version}",
+                ForeColor = Color.Gainsboro,
+                Font = new Font("Segoe UI", 10, FontStyle.Regular),
                 AutoSize = true,
-                Margin = new Padding(0, 5, 0, 5)
+                Location = new Point(93, 54),
+                BackColor = Color.Transparent
             };
 
-            // Description
-            var descLabel = new Label
-            {
-                Text = "Automatically keeps Magic: The Gathering Arena in fullscreen mode",
-                Font = new Font("Segoe UI", 9),
-                TextAlign = ContentAlignment.MiddleCenter,
-                AutoSize = true,
-                MaximumSize = new Size(320, 0),
-                Margin = new Padding(0, 5, 0, 10)
-            };
+            headerPanel.Controls.Add(iconBox);
+            headerPanel.Controls.Add(titleLabel);
+            headerPanel.Controls.Add(subtitleLabel);
 
-            // Statistics
-            var statsLabel = new Label
-            {
-                Text = $"Fullscreen restorations: {restoreCount}",
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleCenter,
-                AutoSize = true,
-                Margin = new Padding(0, 10, 0, 10),
-                ForeColor = Color.FromArgb(16, 124, 16) // Green
-            };
-
-            // Hackathon callout
-            var hackathonPanel = new Panel
+            // Main content area (scroll-safe auto layout panel)
+            var contentPanel = new TableLayoutPanel
             {
                 AutoSize = true,
                 AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                Margin = new Padding(0, 15, 0, 15),
-                BackColor = Color.FromArgb(248, 249, 250), // Light gray background
-                BorderStyle = BorderStyle.FixedSingle
+                Dock = DockStyle.Fill,
+                Padding = new Padding(20),
+                ColumnCount = 1,
             };
+            contentPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
 
-            var hackathonTitle = new Label
+            // Description / purpose card
+            contentPanel.Controls.Add(CreateCard(new Control[]
             {
-                Text = "🚀 Made for For the Love of Code Hackathon",
-                Font = new Font("Segoe UI", 9, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleCenter,
-                AutoSize = true,
-                Location = new Point(10, 8),
-                ForeColor = Color.FromArgb(106, 57, 175) // Purple
-            };
+                CreateHeading("Purpose"),
+                CreateTextLabel("Automatically keeps Magic: The Gathering Arena in true fullscreen by detecting windowed fallbacks and issuing ALT+ENTER only when needed.")
+            }));
 
-            var hackathonLink = new LinkLabel
+            // Stats card
+            contentPanel.Controls.Add(CreateCard(new Control[]
             {
-                Text = "gh.io/ftloc",
-                Font = new Font("Segoe UI", 9),
-                TextAlign = ContentAlignment.MiddleCenter,
-                AutoSize = true,
-                Location = new Point(10, 28),
-                LinkColor = Color.FromArgb(106, 57, 175)
-            };
-            hackathonLink.Click += (s, e) => Process.Start(new ProcessStartInfo
+                CreateHeading("Session Stats"),
+                CreateMetricLabel($"Fullscreen restorations this run: {restoreCount}"),
+                CreateSmallLabel($"≈ {joulesSpent:0.#} J spent · ≈ {secondsSaved:0.##} sec saved")
+            }));
+
+            // Hackathon + tooling card
+            contentPanel.Controls.Add(CreateCard(new Control[]
             {
-                FileName = "https://gh.io/ftloc",
-                UseShellExecute = true
-            });
+                CreateHeading("Built For"),
+                CreateAccentLabel("🚀 For the Love of Code Hackathon"),
+                CreateLinkLabel("gh.io/ftloc", "https://gh.io/ftloc"),
+                CreateSmallLabel("Vibe‑coded with GitHub Copilot & Claude Sonnet 4 on an absurdly wide display 🖥️✨")
+            }));
 
-            var vibeCodedLabel = new Label
+            // Links & credits card
+            contentPanel.Controls.Add(CreateCard(new Control[]
             {
-                Text = "Vibe-coded with GitHub Copilot & Claude Sonnet 4 on the world's biggest mega ultra widescreen 🖥️✨",
-                Font = new Font("Segoe UI", 8),
-                TextAlign = ContentAlignment.MiddleCenter,
-                AutoSize = true,
-                Location = new Point(10, 48),
-                ForeColor = Color.FromArgb(87, 96, 106) // Gray
-            };
+                CreateHeading("Links"),
+                CreateLinkLabel("Source Repository", "https://github.com/leereilly/MTGAFullscreenHelper"),
+                CreateLinkLabel("Report an Issue", "https://github.com/leereilly/MTGAFullscreenHelper/issues"),
+                CreateLinkLabel("Buy me a coffee ☕", "https://buymeacoffee.com/leereilly")
+            }));
 
-            hackathonPanel.Controls.Add(hackathonTitle);
-            hackathonPanel.Controls.Add(hackathonLink);
-            hackathonPanel.Controls.Add(vibeCodedLabel);
+            // Footer credits
+            contentPanel.Controls.Add(CreateFooterLabel("Created by Lee Reilly · MIT Licensed"));
 
-            // Set panel size to fit content with padding
-            hackathonPanel.Width = Math.Max(hackathonTitle.Width, 
-                                          Math.Max(hackathonLink.Width, vibeCodedLabel.Width)) + 20;
-            hackathonPanel.Height = 70;
-
-            // Author and repository info
-            var infoPanel = new Panel
+            // Buttons panel
+            var buttonsPanel = new FlowLayoutPanel
             {
-                AutoSize = true,
-                AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                Margin = new Padding(0, 10, 0, 10)
-            };
-
-            var authorLabel = new Label
-            {
-                Text = "Created by Lee Reilly",
-                Font = new Font("Segoe UI", 9),
-                TextAlign = ContentAlignment.MiddleCenter,
-                AutoSize = true,
-                Location = new Point(0, 0)
-            };
-
-            var repoLink = new LinkLabel
-            {
-                Text = "github.com/leereilly/MTGAFullscreenHelper",
-                Font = new Font("Segoe UI", 9),
-                TextAlign = ContentAlignment.MiddleCenter,
-                AutoSize = true,
-                Location = new Point(0, 25),
-                LinkColor = Color.FromArgb(0, 120, 215)
-            };
-            repoLink.Click += (s, e) => Process.Start(new ProcessStartInfo
-            {
-                FileName = "https://github.com/leereilly/MTGAFullscreenHelper",
-                UseShellExecute = true
-            });
-
-            // Center the labels within the info panel
-            authorLabel.Left = (infoPanel.Width - authorLabel.Width) / 2;
-            repoLink.Left = (infoPanel.Width - repoLink.Width) / 2;
-            
-            infoPanel.Controls.Add(authorLabel);
-            infoPanel.Controls.Add(repoLink);
-            infoPanel.Height = 50;
-
-            // OK button
-            var okButton = new Button
-            {
-                Text = "OK",
-                Size = new Size(75, 30),
-                DialogResult = DialogResult.OK,
-                Margin = new Padding(0, 15, 0, 10)
-            };
-            okButton.Click += (s, e) => this.Close();
-
-            var buttonPanel = new Panel
-            {
+                FlowDirection = FlowDirection.RightToLeft,
+                Dock = DockStyle.Bottom,
+                Padding = new Padding(15, 5, 15, 15),
                 AutoSize = true,
                 AutoSizeMode = AutoSizeMode.GrowAndShrink
             };
-            okButton.Location = new Point(0, 0);
-            buttonPanel.Controls.Add(okButton);
-            buttonPanel.Width = okButton.Width;
-            buttonPanel.Height = okButton.Height;
 
-            // Add all controls to main panel
-            mainPanel.Controls.Add(titleLabel, 0, 0);
-            mainPanel.Controls.Add(versionLabel, 0, 1);
-            mainPanel.Controls.Add(descLabel, 0, 2);
-            mainPanel.Controls.Add(statsLabel, 0, 3);
-            mainPanel.Controls.Add(hackathonPanel, 0, 4);
-            mainPanel.Controls.Add(infoPanel, 0, 5);
-            mainPanel.Controls.Add(buttonPanel, 0, 6);
+            var closeButton = new Button
+            {
+                Text = "Close",
+                DialogResult = DialogResult.OK,
+                AutoSize = true,
+                FlatStyle = FlatStyle.System
+            };
+            closeButton.Click += (s, e) => Close();
+            buttonsPanel.Controls.Add(closeButton);
+            AcceptButton = closeButton;
 
-            // Set row styles to auto-size
-            mainPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            mainPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            mainPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            mainPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            mainPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            mainPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            mainPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            // Root container
+            var root = new Panel
+            {
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                Dock = DockStyle.Fill
+            };
+            root.Controls.Add(contentPanel);
+            root.Controls.Add(buttonsPanel);
+            Controls.Add(root);
+            Controls.Add(headerPanel);
+        }
 
-            // Center all items in their cells
-            mainPanel.SetCellPosition(titleLabel, new TableLayoutPanelCellPosition(0, 0));
-            mainPanel.SetCellPosition(versionLabel, new TableLayoutPanelCellPosition(0, 1));
-            mainPanel.SetCellPosition(descLabel, new TableLayoutPanelCellPosition(0, 2));
-            mainPanel.SetCellPosition(statsLabel, new TableLayoutPanelCellPosition(0, 3));
-            mainPanel.SetCellPosition(hackathonPanel, new TableLayoutPanelCellPosition(0, 4));
-            mainPanel.SetCellPosition(infoPanel, new TableLayoutPanelCellPosition(0, 5));
-            mainPanel.SetCellPosition(buttonPanel, new TableLayoutPanelCellPosition(0, 6));
+        // --- UI helper factory methods ---
+        private static Label CreateHeading(string text) => new Label
+        {
+            Text = text,
+            Font = new Font("Segoe UI", 11, FontStyle.Bold),
+            ForeColor = Color.FromArgb(30, 30, 30),
+            AutoSize = true,
+            Margin = new Padding(0, 0, 0, 6)
+        };
 
-            this.Controls.Add(mainPanel);
-            this.AcceptButton = okButton;
+        private static Label CreateTextLabel(string text) => new Label
+        {
+            Text = text,
+            Font = new Font("Segoe UI", 9),
+            ForeColor = Color.FromArgb(55, 60, 65),
+            AutoSize = true,
+            MaximumSize = new Size(480, 0),
+            Margin = new Padding(0, 0, 0, 4)
+        };
+
+        private static Label CreateMetricLabel(string text) => new Label
+        {
+            Text = text,
+            Font = new Font("Segoe UI", 10, FontStyle.Bold),
+            ForeColor = Color.FromArgb(16, 124, 16),
+            AutoSize = true,
+            Margin = new Padding(0, 0, 0, 2)
+        };
+
+        private static Label CreateAccentLabel(string text) => new Label
+        {
+            Text = text,
+            Font = new Font("Segoe UI", 9, FontStyle.Bold),
+            ForeColor = Color.FromArgb(106, 57, 175),
+            AutoSize = true,
+            Margin = new Padding(0, 4, 0, 2)
+        };
+
+        private static Label CreateSmallLabel(string text) => new Label
+        {
+            Text = text,
+            Font = new Font("Segoe UI", 8, FontStyle.Italic),
+            ForeColor = Color.FromArgb(87, 96, 106),
+            AutoSize = true,
+            MaximumSize = new Size(480, 0),
+            Margin = new Padding(0, 0, 0, 4)
+        };
+
+        private static LinkLabel CreateLinkLabel(string text, string url)
+        {
+            var link = new LinkLabel
+            {
+                Text = text,
+                AutoSize = true,
+                Font = new Font("Segoe UI", 9, FontStyle.Underline),
+                LinkColor = Color.FromArgb(0, 102, 204),
+                ActiveLinkColor = Color.FromArgb(10, 132, 255),
+                Margin = new Padding(0, 0, 0, 3)
+            };
+            link.Click += (s, e) =>
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                }
+                catch { }
+            };
+            return link;
+        }
+
+        private static Label CreateFooterLabel(string text) => new Label
+        {
+            Text = text,
+            Font = new Font("Segoe UI", 8, FontStyle.Regular),
+            ForeColor = Color.FromArgb(120, 120, 130),
+            AutoSize = true,
+            Margin = new Padding(0, 18, 0, 4)
+        };
+
+        private static Panel CreateCard(Control[] children)
+        {
+            var panel = new Panel
+            {
+                BackColor = Color.White,
+                Padding = new Padding(14, 12, 14, 12),
+                Margin = new Padding(0, 0, 0, 12),
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink
+            };
+            panel.Paint += (s, e) =>
+            {
+                var r = panel.ClientRectangle;
+                r.Width -= 1; r.Height -= 1;
+                using var path = RoundedRect(r, 10);
+                using var shadow = new Pen(Color.FromArgb(220, 230, 240));
+                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                e.Graphics.DrawPath(shadow, path);
+            };
+
+            var layout = new FlowLayoutPanel
+            {
+                FlowDirection = FlowDirection.TopDown,
+                WrapContents = false,
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                Dock = DockStyle.Fill
+            };
+            foreach (var c in children)
+            {
+                layout.Controls.Add(c);
+            }
+            panel.Controls.Add(layout);
+            return panel;
+        }
+
+        private static System.Drawing.Drawing2D.GraphicsPath RoundedRect(Rectangle bounds, int radius)
+        {
+            int d = radius * 2;
+            var path = new System.Drawing.Drawing2D.GraphicsPath();
+            path.AddArc(bounds.X, bounds.Y, d, d, 180, 90);
+            path.AddArc(bounds.Right - d, bounds.Y, d, d, 270, 90);
+            path.AddArc(bounds.Right - d, bounds.Bottom - d, d, d, 0, 90);
+            path.AddArc(bounds.X, bounds.Bottom - d, d, d, 90, 90);
+            path.CloseFigure();
+            return path;
         }
     }
 }

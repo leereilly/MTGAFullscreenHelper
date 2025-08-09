@@ -1,6 +1,6 @@
 [Setup]
 AppName=MTGA Fullscreen Helper
-AppVersion=0.0.1
+AppVersion=0.0.2
 AppPublisher=Lee Reilly
 DefaultDirName={autopf}\MTGA Fullscreen Helper
 DefaultGroupName=MTGA Fullscreen Helper
