@@ -2,5 +2,5 @@
   "WindowTitle": "MTGA",
   "Executable": "MTGA.exe",
   "CheckIntervalMs": 100,
-  "RestoreCount": 15
+  "RestoreCount": 24
 }
