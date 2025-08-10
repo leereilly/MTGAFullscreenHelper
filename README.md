@@ -15,6 +15,7 @@ I usually conjure spells on macOS and Linux, but this Windows build is my first 
 <br clear="all" />
 
 Enjoy MTG Arena on your ultrawides again 🤩
+
 ![Magic: The Gathering Arena screenshot on an ultrawide display](mtga.png)
 
 ## Features
