@@ -1,4 +1,4 @@
-# <img src="MTGAFullscreenHelper.png" height="28"> MTGA Fullscreen Helper
+# <img src="MTGAFullScreenHelper.png" height="28"> MTGA Fullscreen Helper
 
 <img align="right" width="25%" src="screenshot.png">
 
@@ -9,6 +9,9 @@ This was crafted for GitHub’s [For the Love of Code hackathon](https://gh.io/f
 I usually conjure spells on macOS and Linux, but this Windows build is my first summoning in that domain. If you see bugs, send word to the council ([open an issue](https://github.com/leereilly/MTGAFullscreenHelper/issues/new)).
 
 **Quick install:** Navigate to [Releases](https://github.com/leereilly/MTGAFullscreenHelper/releases/) and download the latest `MTGAFullscreenHelper-Setup.exe`. Double-click. Install. Magic.
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/leereilly)
+
 <br clear="all" />
 
 ## Features
