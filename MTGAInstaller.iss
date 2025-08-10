@@ -19,6 +19,7 @@ Name: "startupicon"; Description: "Start with Windows"; GroupDescription: "Auto-
 
 [Files]
 Source: "bin\Release\net6.0-windows\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "MTGAFullScreenHelper.ico"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\MTGA Fullscreen Helper"; Filename: "{app}\MTGAFullscreenHelper.exe"

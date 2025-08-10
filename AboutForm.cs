@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Drawing.Drawing2D; // added for gradient
+using System.Drawing.Drawing2D;
 
 namespace MTGAFullscreenHelper
 {
@@ -33,6 +33,35 @@ namespace MTGAFullscreenHelper
             // Derived fun stats
             var joulesSpent = 1.5 * restoreCount; // J
             var secondsSaved = 0.42 * restoreCount; // s
+            
+            // Format energy units
+            string energyText = joulesSpent >= 1000 
+                ? $"{joulesSpent / 1000:0.##} kilojoules" 
+                : $"{joulesSpent:0.#} joules";
+            
+            // Format time units
+            string timeText;
+            if (secondsSaved >= 3600) // 1 hour or more
+            {
+                var hours = (int)(secondsSaved / 3600);
+                var minutes = (int)((secondsSaved % 3600) / 60);
+                var secs = (int)(secondsSaved % 60);
+                timeText = hours > 0 && minutes > 0 
+                    ? $"{hours}h {minutes}m {secs}s"
+                    : hours > 0 
+                        ? $"{hours}h {secs}s"
+                        : $"{minutes}m {secs}s";
+            }
+            else if (secondsSaved >= 60) // 1 minute or more
+            {
+                var minutes = (int)(secondsSaved / 60);
+                var secs = (int)(secondsSaved % 60);
+                timeText = $"{minutes}m {secs}s";
+            }
+            else
+            {
+                timeText = $"{secondsSaved:0.##} seconds";
+            }
 
             // Header panel with gradient
             var headerPanel = new Panel
@@ -110,18 +139,18 @@ namespace MTGAFullscreenHelper
             // Stats card
             contentPanel.Controls.Add(CreateCard(new Control[]
             {
-                CreateHeading("Session Stats"),
+                CreateHeading("Usage"),
                 CreateMetricLabel($"Fullscreen restorations this run: {restoreCount}"),
-                CreateSmallLabel($"≈ {joulesSpent:0.#} J spent · ≈ {secondsSaved:0.##} sec saved")
+                CreateSmallLabel($"You've saved {energyText} and {timeText} from unnecessary ALT and ENTER keystrokes.")
             }));
 
-            // Hackathon + tooling card
+            // Support card
             contentPanel.Controls.Add(CreateCard(new Control[]
             {
-                CreateHeading("Built For"),
-                CreateAccentLabel("🚀 For the Love of Code Hackathon"),
-                CreateLinkLabel("gh.io/ftloc", "https://gh.io/ftloc"),
-                CreateSmallLabel("Vibe‑coded with GitHub Copilot & Claude Sonnet 4 on an absurdly wide display 🖥️✨")
+                CreateHeading("Support"),
+                CreateSmallLabel("It all adds up! If this saved you a lot of heartache you can show your appreciation:"),
+                CreateCoffeeButton(),
+                CreateSmallLabel("(I'll likely use the money to buy more Magic cards though)")
             }));
 
             // Links & credits card
@@ -129,12 +158,11 @@ namespace MTGAFullscreenHelper
             {
                 CreateHeading("Links"),
                 CreateLinkLabel("Source Repository", "https://github.com/leereilly/MTGAFullscreenHelper"),
-                CreateLinkLabel("Report an Issue", "https://github.com/leereilly/MTGAFullscreenHelper/issues"),
-                CreateLinkLabel("Buy me a coffee ☕", "https://buymeacoffee.com/leereilly")
+                CreateLinkLabel("Report an Issue", "https://github.com/leereilly/MTGAFullscreenHelper/issues")
             }));
 
             // Footer credits
-            contentPanel.Controls.Add(CreateFooterLabel("Created by Lee Reilly · MIT Licensed"));
+            contentPanel.Controls.Add(CreateFooterWithLink("Built with ♥ by Lee Reilly, GitHub Copilot, and Claude Sonnet 4 ", "#ForTheLoveOfCode", "https://gh.io/ftloc", ""));
 
             // Buttons panel
             var buttonsPanel = new FlowLayoutPanel
@@ -183,7 +211,7 @@ namespace MTGAFullscreenHelper
         private static Label CreateTextLabel(string text) => new Label
         {
             Text = text,
-            Font = new Font("Segoe UI", 9),
+            Font = new Font("Segoe UI", 10), // Increased from 9 to 10
             ForeColor = Color.FromArgb(55, 60, 65),
             AutoSize = true,
             MaximumSize = new Size(480, 0),
@@ -202,7 +230,7 @@ namespace MTGAFullscreenHelper
         private static Label CreateAccentLabel(string text) => new Label
         {
             Text = text,
-            Font = new Font("Segoe UI", 9, FontStyle.Bold),
+            Font = new Font("Segoe UI", 10, FontStyle.Bold), // Increased from 9 to 10
             ForeColor = Color.FromArgb(106, 57, 175),
             AutoSize = true,
             Margin = new Padding(0, 4, 0, 2)
@@ -211,7 +239,7 @@ namespace MTGAFullscreenHelper
         private static Label CreateSmallLabel(string text) => new Label
         {
             Text = text,
-            Font = new Font("Segoe UI", 8, FontStyle.Italic),
+            Font = new Font("Segoe UI", 10), // Changed from 9 to 10, removed italics
             ForeColor = Color.FromArgb(87, 96, 106),
             AutoSize = true,
             MaximumSize = new Size(480, 0),
@@ -224,7 +252,7 @@ namespace MTGAFullscreenHelper
             {
                 Text = text,
                 AutoSize = true,
-                Font = new Font("Segoe UI", 9, FontStyle.Underline),
+                Font = new Font("Segoe UI", 10, FontStyle.Underline), // Increased from 9 to 10
                 LinkColor = Color.FromArgb(0, 102, 204),
                 ActiveLinkColor = Color.FromArgb(10, 132, 255),
                 Margin = new Padding(0, 0, 0, 3)
@@ -240,6 +268,39 @@ namespace MTGAFullscreenHelper
             return link;
         }
 
+        private static Button CreateCoffeeButton()
+        {
+            var button = new Button
+            {
+                Text = "☕ Buy me a coffee",
+                AutoSize = true,
+                Font = new Font("Segoe UI", 10, FontStyle.Regular),
+                BackColor = Color.FromArgb(255, 221, 87), // Coffee-like yellow color
+                ForeColor = Color.FromArgb(52, 35, 19), // Dark brown text
+                FlatStyle = FlatStyle.Flat,
+                Margin = new Padding(0, 4, 0, 4),
+                Padding = new Padding(12, 6, 12, 6),
+                Cursor = Cursors.Hand
+            };
+            button.FlatAppearance.BorderColor = Color.FromArgb(210, 180, 50);
+            button.FlatAppearance.BorderSize = 1;
+            
+            button.Click += (s, e) =>
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo { FileName = "https://buymeacoffee.com/leereilly", UseShellExecute = true });
+                }
+                catch { }
+            };
+            
+            // Add hover effects
+            button.MouseEnter += (s, e) => button.BackColor = Color.FromArgb(255, 235, 120);
+            button.MouseLeave += (s, e) => button.BackColor = Color.FromArgb(255, 221, 87);
+            
+            return button;
+        }
+
         private static Label CreateFooterLabel(string text) => new Label
         {
             Text = text,
@@ -249,6 +310,111 @@ namespace MTGAFullscreenHelper
             Margin = new Padding(0, 18, 0, 4)
         };
 
+        private static Panel CreateInlineTextWithLink(string beforeText, string linkText, string url)
+        {
+            var panel = new FlowLayoutPanel
+            {
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = true,
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                Margin = new Padding(0, 0, 0, 4)
+            };
+
+            var beforeLabel = new Label
+            {
+                Text = beforeText,
+                Font = new Font("Segoe UI", 10),
+                ForeColor = Color.FromArgb(87, 96, 106),
+                AutoSize = true,
+                Margin = new Padding(0, 0, 0, 0)
+            };
+
+            var link = new LinkLabel
+            {
+                Text = linkText,
+                AutoSize = true,
+                Font = new Font("Segoe UI", 10, FontStyle.Underline),
+                LinkColor = Color.FromArgb(0, 102, 204),
+                ActiveLinkColor = Color.FromArgb(10, 132, 255),
+                Margin = new Padding(0, 0, 0, 0)
+            };
+            link.Click += (s, e) =>
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                }
+                catch { }
+            };
+
+            panel.Controls.Add(beforeLabel);
+            panel.Controls.Add(link);
+            return panel;
+        }
+
+        private static Panel CreateFooterWithLink(string beforeText, string linkText, string url, string afterText)
+        {
+            var panel = new FlowLayoutPanel
+            {
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = true,
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                Margin = new Padding(0, 18, 0, 4),
+                Anchor = AnchorStyles.None // Center the panel
+            };
+
+            var beforeLabel = new Label
+            {
+                Text = beforeText,
+                Font = new Font("Segoe UI", 8, FontStyle.Regular),
+                ForeColor = Color.FromArgb(120, 120, 130),
+                AutoSize = true,
+                Margin = new Padding(0, 0, 0, 0),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+
+            var link = new LinkLabel
+            {
+                Text = linkText,
+                AutoSize = true,
+                Font = new Font("Segoe UI", 8, FontStyle.Underline),
+                LinkColor = Color.FromArgb(120, 120, 130),
+                ActiveLinkColor = Color.FromArgb(10, 132, 255),
+                Margin = new Padding(0, 0, 0, 0),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+            link.Click += (s, e) =>
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                }
+                catch { }
+            };
+
+            panel.Controls.Add(beforeLabel);
+            panel.Controls.Add(link);
+            
+            // Only add afterText if it's not empty
+            if (!string.IsNullOrEmpty(afterText))
+            {
+                var afterLabel = new Label
+                {
+                    Text = afterText,
+                    Font = new Font("Segoe UI", 8, FontStyle.Regular),
+                    ForeColor = Color.FromArgb(120, 120, 130),
+                    AutoSize = true,
+                    Margin = new Padding(0, 0, 0, 0),
+                    TextAlign = ContentAlignment.MiddleCenter
+                };
+                panel.Controls.Add(afterLabel);
+            }
+            
+            return panel;
+        }
+
         private static Panel CreateCard(Control[] children)
         {
             var panel = new Panel
@@ -257,7 +423,10 @@ namespace MTGAFullscreenHelper
                 Padding = new Padding(14, 12, 14, 12),
                 Margin = new Padding(0, 0, 0, 12),
                 AutoSize = true,
-                AutoSizeMode = AutoSizeMode.GrowAndShrink
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                Width = 480, // Set consistent width for all cards
+                MinimumSize = new Size(480, 0),
+                MaximumSize = new Size(480, 0) // Force maximum width to prevent expansion
             };
             panel.Paint += (s, e) =>
             {
@@ -275,7 +444,9 @@ namespace MTGAFullscreenHelper
                 WrapContents = false,
                 AutoSize = true,
                 AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                Dock = DockStyle.Fill
+                Dock = DockStyle.Fill,
+                Width = 452, // Account for padding (480 - 28)
+                MaximumSize = new Size(452, 0) // Constrain inner layout width
             };
             foreach (var c in children)
             {

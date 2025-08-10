@@ -54,14 +54,9 @@ namespace MTGAFullscreenHelper
         {
             var contextMenu = new ContextMenuStrip();
             
-            var toggleItem = new ToolStripMenuItem("Toggle Active", null, ToggleActive);
-            var resetCounterItem = new ToolStripMenuItem("Reset Counter", null, ResetCounter);
             var aboutItem = new ToolStripMenuItem("About", null, ShowAbout);
             var quitItem = new ToolStripMenuItem("Quit", null, Quit);
             
-            contextMenu.Items.Add(toggleItem);
-            contextMenu.Items.Add(resetCounterItem);
-            contextMenu.Items.Add("-"); // Separator
             contextMenu.Items.Add(aboutItem);
             contextMenu.Items.Add("-"); // Separator
             contextMenu.Items.Add(quitItem);
@@ -72,11 +67,7 @@ namespace MTGAFullscreenHelper
         private string GetTrayText()
         {
             string status = active ? "Active" : "Paused";
-            if (active && !hasBeenFullscreenOnce)
-            {
-                status = "Waiting for game to load";
-            }
-            return $"MTGA Fullscreen Helper ({status}) - Restored: {config.RestoreCount}";
+            return $"MTGA Fullscreen Helper ({status})";
         }
 
         private void UpdateTrayText()
@@ -136,25 +127,6 @@ namespace MTGAFullscreenHelper
                 UpdateTrayText();
                 lastRestoreTime = DateTime.Now;
             }
-        }
-
-        private void ToggleActive(object? sender, EventArgs e)
-        {
-            active = !active;
-            // Reset the fullscreen detection when toggling
-            if (active)
-            {
-                hasBeenFullscreenOnce = false;
-            }
-            UpdateTrayText();
-        }
-
-        private void ResetCounter(object? sender, EventArgs e)
-        {
-            config.RestoreCount = 0;
-            hasBeenFullscreenOnce = false;
-            config.Save(configPath);
-            UpdateTrayText();
         }
 
         private void ShowAbout(object? sender, EventArgs e)
