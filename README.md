@@ -1,6 +1,6 @@
-# <img src="MTGAFullScreenHelper.png" height="28"> MTGA Fullscreen Helper
+# <img alt="logo" src="MTGAFullScreenHelper.png" height="28"> MTGA Fullscreen Helper
 
-<img align="right" width="25%" src="screenshot.png">
+<img align="right" width="25%" src="screenshot.png" alt="A frustrating MTG card">
 
 Tired of casting the <kbd>ALT</kbd> + <kbd>ENTER</kbd> fullscreen spell at every scene change in MTG Arena on your ultrawide display? This tray script finally breaks the [years-long ultrawide ~~bug~~ curse Wizards forgot to unsummon](https://feedback.wizards.com/forums/918667-mtg-arena-bugs-product-suggestions/suggestions/47712281-can-t-use-ultrawide-fullscreen).
 
@@ -13,6 +13,9 @@ I usually conjure spells on macOS and Linux, but this Windows build is my first 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/leereilly)
 
 <br clear="all" />
+
+Enjoy MTG Arena on your ultrawides again 🤩
+![Magic: The Gathering Arena screenshot on an ultrawide display](mtga.png)
 
 ## Features
 
